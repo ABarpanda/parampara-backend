@@ -4,6 +4,19 @@ import { authMiddleware } from '../middleware/auth.js';
 
 const router = express.Router();
 
+// Search rituals
+router.get('/search', async (req, res) => {
+  const { q } = req.query;
+  const { data: rituals, error } = await supabase
+    .from('rituals')
+    .select('*')
+    .or(`title.ilike.%${q}%,description.ilike.%${q}%`)
+    .order('created_at', { ascending: false });
+
+  if (error) return res.status(500).json({ message: error.message });
+  res.json(rituals);
+});
+
 // Get all rituals with pagination
 router.get('/', async (req, res) => {
   try {
@@ -35,20 +48,16 @@ router.get('/', async (req, res) => {
 
 // Get ritual by ID
 router.get('/:id', async (req, res) => {
-  try {
-    const { data: ritual, error } = await supabase
-      .from('rituals')
-      .select('*')
-      .eq('id', req.params.id)
-      .single();
+  const { data: ritual, error } = await supabase
+    .from('rituals')
+    .select('*')
+    .eq('id', req.params.id)
+    .single();
 
-    if (error) throw error;
-    if (!ritual) return res.status(404).json({ message: 'Ritual not found' });
+  if (error) return res.status(500).json({ message: error.message });
+  if (!ritual) return res.status(404).json({ message: 'Ritual not found' });
 
-    res.json(ritual);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+  res.json(ritual);
 });
 
 // Create ritual (protected)
@@ -144,25 +153,6 @@ router.delete('/:id', authMiddleware, async (req, res) => {
     if (error) throw error;
 
     res.json({ message: 'Ritual deleted' });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// Search rituals
-router.get('/search', async (req, res) => {
-  try {
-    const { q } = req.query;
-    
-    const { data: rituals, error } = await supabase
-      .from('rituals')
-      .select('*')
-      .or(`title.ilike.%${q}%,description.ilike.%${q}%`)
-      .order('created_at', { ascending: false });
-
-    if (error) throw error;
-
-    res.json(rituals);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

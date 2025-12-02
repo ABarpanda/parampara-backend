@@ -11,8 +11,18 @@ import { errorHandler } from './middleware/auth.js';
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: [process.env.FRONTEND_URL, 'http://localhost:3000', 'http://localhost:5000'].filter(Boolean),
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
+
+// Root route
+app.get('/', (req, res) => {
+  res.json({ message: 'Parampara Backend API', version: '1.0.0' });
+});
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -20,7 +30,7 @@ app.use('/api/rituals', ritualsRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/connections', connectionsRoutes);
 app.use('/api/categories', categoriesRoutes);
-app.use('/api/rituals', interactionsRoutes);
+app.use('/api/interactions', interactionsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

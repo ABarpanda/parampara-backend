@@ -1,5 +1,7 @@
 import express from 'express';
 import supabase from '../db.js';
+import jwt from 'jsonwebtoken';
+import config from '../config.js';
 import { generateToken, hashPassword, comparePassword } from '../utils/auth.js';
 
 const router = express.Router();
@@ -9,7 +11,6 @@ router.post('/register', async (req, res) => {
   try {
     const { email, password, fullName, region } = req.body;
 
-    // Check if user exists
     const { data: existingUser } = await supabase
       .from('users')
       .select('id')
@@ -20,10 +21,8 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ message: 'Email already registered' });
     }
 
-    // Hash password
     const hashedPassword = await hashPassword(password);
 
-    // Create user
     const { data: user, error } = await supabase
       .from('users')
       .insert({
@@ -58,7 +57,6 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find user
     const { data: user, error } = await supabase
       .from('users')
       .select('*')
@@ -69,7 +67,6 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Compare password
     const isValidPassword = await comparePassword(password, user.password_hash);
     if (!isValidPassword) {
       return res.status(401).json({ message: 'Invalid credentials' });
@@ -93,7 +90,7 @@ router.post('/login', async (req, res) => {
 // Verify token
 router.get('/verify', (req, res) => {
   const token = req.headers.authorization?.split(' ')[1];
-  
+
   if (!token) {
     return res.status(401).json({ message: 'No token' });
   }
@@ -104,7 +101,8 @@ router.get('/verify', (req, res) => {
       user: {
         id: decoded.id,
         email: decoded.email,
-        fullName: decoded.fullName
+        fullName: decoded.full_name,
+        region: decoded.region
       }
     });
   } catch (err) {

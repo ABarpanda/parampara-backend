@@ -40,3 +40,5 @@ temp/
 # Backup files
 *.bak
 *.backup
+.vercel
+.env*.local
