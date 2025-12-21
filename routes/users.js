@@ -19,7 +19,7 @@ router.get('/:id', async (req, res) => {
     res.json({
       id: user.id,
       email: user.email,
-      fullName: user.full_name,
+      full_name: user.full_name,
       region: user.region,
       createdAt: user.created_at
     });
@@ -42,7 +42,7 @@ router.get('/me/profile', authMiddleware, async (req, res) => {
     res.json({
       id: user.id,
       email: user.email,
-      fullName: user.full_name,
+      full_name: user.full_name,
       region: user.region,
       createdAt: user.created_at
     });
@@ -58,12 +58,12 @@ router.put('/:id', authMiddleware, async (req, res) => {
       return res.status(403).json({ message: 'Not authorized' });
     }
 
-    const { fullName, region } = req.body;
+    const { full_name, region } = req.body;
 
     const { data: user, error } = await supabase
       .from('users')
       .update({
-        full_name: fullName,
+        full_name: full_name,
         region
       })
       .eq('id', req.user.id)
@@ -75,7 +75,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
     res.json({
       id: user.id,
       email: user.email,
-      fullName: user.full_name,
+      full_name: user.full_name,
       region: user.region
     });
   } catch (err) {
@@ -86,12 +86,12 @@ router.put('/:id', authMiddleware, async (req, res) => {
 // Update my profile (protected)
 router.put('/me/profile', authMiddleware, async (req, res) => {
   try {
-    const { fullName, region } = req.body;
+    const { full_name, region } = req.body;
 
     const { data: user, error } = await supabase
       .from('users')
       .update({
-        full_name: fullName,
+        full_name: full_name,
         region
       })
       .eq('id', req.user.id)
@@ -103,7 +103,7 @@ router.put('/me/profile', authMiddleware, async (req, res) => {
     res.json({
       id: user.id,
       email: user.email,
-      fullName: user.full_name,
+      full_name: user.full_name,
       region: user.region
     });
   } catch (err) {
