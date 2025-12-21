@@ -4,28 +4,28 @@ import { authMiddleware } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Get all states
+// Get all regions
 router.get('/', async (req, res) => {
-    const { data: states, error } = await supabase
-        .from('states')
+    const { data: regions, error } = await supabase
+        .from('regions')
         .select('*')
     
     if (error) return res.status(500).json({ message: error.message });
-    res.json(states);
+    res.json(regions);
 });
 
-// Get state by ID
+// Get region by ID
 router.get('/:id', async (req, res) => {
-  const { data: state, error } = await supabase
-    .from('states')
+  const { data: region, error } = await supabase
+    .from('regions')
     .select('*')
     .eq('id', req.params.id)
     .single();
 
   if (error) return res.status(500).json({ message: error.message });
-  if (!state) return res.status(404).json({ message: 'State not found' });
+  if (!region) return res.status(404).json({ message: 'Region not found' });
 
-  res.json(state);
+  res.json(region);
 });
 
 export default router;

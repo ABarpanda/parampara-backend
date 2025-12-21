@@ -6,7 +6,8 @@ import usersRoutes from './routes/users.js';
 import connectionsRoutes from './routes/connections.js';
 import categoriesRoutes from './routes/categories.js';
 import interactionsRoutes from './routes/interactions.js';
-import statesRoutes from './routes/states.js'
+import statesRoutes from './routes/states.js';
+import regionsRoutes from './routes/regions.js';
 import { errorHandler } from './middleware/auth.js';
 
 const app = express();
@@ -33,6 +34,7 @@ app.use('/api/connections', connectionsRoutes);
 app.use('/api/categories', categoriesRoutes);
 app.use('/api/interactions', interactionsRoutes);
 app.use('/api/states', statesRoutes);
+app.use('/api/regions', regionsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
