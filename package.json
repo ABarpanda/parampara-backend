@@ -1,6 +1,6 @@
 {
   "name": "parampara-backend",
-  "version": "1.0.0",
+  "version": "1.1.2",
   "description": "Backend API for Parampara - Family Rituals Platform",
   "main": "server.js",
   "type": "module",

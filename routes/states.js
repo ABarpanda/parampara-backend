@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     const { data: states, error } = await supabase
         .from('states')
-        .select('*')
+        .select('*');
     
     if (error) return res.status(500).json({ message: error.message });
     res.json(states);
