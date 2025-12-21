@@ -3,5 +3,6 @@
 - [x] Set CORS to .env
 - [ ] Profile view
 - [ ] Edit Profile
-- [ ] Edit Ritual
+- [x] Edit Ritual
 - [ ] Search ritual by tags
+- [ ] Add Culture field
