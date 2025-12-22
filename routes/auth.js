@@ -30,6 +30,8 @@ router.post('/register', async (req, res) => {
         password_hash: hashedPassword,
         full_name: full_name,
         state_name: state_name,
+        profile_picture: null,
+        region: null,
         created_at: new Date()
       })
       .select()
@@ -43,7 +45,10 @@ router.post('/register', async (req, res) => {
         id: user.id,
         email: user.email,
         full_name: user.full_name,
-        state_name: user.state_name
+        state_name: user.state_name,
+        profile_picture: user.profile_picture,
+        region: user.region,
+        created_at: user.created_at
       },
       token
     });
@@ -78,7 +83,10 @@ router.post('/login', async (req, res) => {
         id: user.id,
         email: user.email,
         full_name: user.full_name,
-        state_name: user.state_name
+        state_name: user.state_name,
+        profile_picture: user.profile_picture,
+        region: user.region,
+        created_at: user.created_at
       },
       token
     });

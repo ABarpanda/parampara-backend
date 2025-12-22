@@ -63,7 +63,7 @@ router.get('/:id', async (req, res) => {
 // Create ritual (protected)
 router.post('/', authMiddleware, async (req, res) => {
   try {
-    console.log(req);
+    // console.log(req);
     const { title, description, category, state, tags, significance, frequency } = req.body;
 
     const { data: ritual, error } = await supabase
