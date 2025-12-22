@@ -5,7 +5,13 @@ import config from '../config.js';
 
 export function generateToken(user) {
   return jwt.sign(
-    { id: user.id, email: user.email, full_name: user.full_name, region: user.region },
+    { 
+      id: user.id, 
+      email: user.email, 
+      full_name: user.full_name, 
+      state_name: user.state_name, 
+      created_at: user.created_at 
+    },
     config.JWT_SECRET,
     { expiresIn: '7d' }
   );

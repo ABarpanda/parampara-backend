@@ -9,7 +9,7 @@ router.get('/:id', async (req, res) => {
   try {
     const { data: user, error } = await supabase
       .from('users')
-      .select('id, email, full_name, region, created_at')
+      .select('id, email, full_name, state_name, created_at')
       .eq('id', req.params.id)
       .single();
 
@@ -20,7 +20,7 @@ router.get('/:id', async (req, res) => {
       id: user.id,
       email: user.email,
       full_name: user.full_name,
-      region: user.region,
+      state_name: user.state_name,
       createdAt: user.created_at
     });
   } catch (err) {
@@ -43,7 +43,7 @@ router.get('/me/profile', authMiddleware, async (req, res) => {
       id: user.id,
       email: user.email,
       full_name: user.full_name,
-      region: user.region,
+      state_name: user.state_name,
       createdAt: user.created_at
     });
   } catch (err) {
@@ -58,13 +58,13 @@ router.put('/:id', authMiddleware, async (req, res) => {
       return res.status(403).json({ message: 'Not authorized' });
     }
 
-    const { full_name, region } = req.body;
+    const { full_name, state_name } = req.body;
 
     const { data: user, error } = await supabase
       .from('users')
       .update({
         full_name: full_name,
-        region
+        state_name
       })
       .eq('id', req.user.id)
       .select()
@@ -76,7 +76,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
       id: user.id,
       email: user.email,
       full_name: user.full_name,
-      region: user.region
+      state_name: user.state_name
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -86,13 +86,13 @@ router.put('/:id', authMiddleware, async (req, res) => {
 // Update my profile (protected)
 router.put('/me/profile', authMiddleware, async (req, res) => {
   try {
-    const { full_name, region } = req.body;
+    const { full_name, state_name } = req.body;
 
     const { data: user, error } = await supabase
       .from('users')
       .update({
         full_name: full_name,
-        region
+        state_name
       })
       .eq('id', req.user.id)
       .select()
@@ -104,7 +104,7 @@ router.put('/me/profile', authMiddleware, async (req, res) => {
       id: user.id,
       email: user.email,
       full_name: user.full_name,
-      region: user.region
+      state_name: user.state_name
     });
   } catch (err) {
     res.status(500).json({ message: err.message });

@@ -63,7 +63,8 @@ router.get('/:id', async (req, res) => {
 // Create ritual (protected)
 router.post('/', authMiddleware, async (req, res) => {
   try {
-    const { title, description, category, region, tags, significance, frequency } = req.body;
+    console.log(req);
+    const { title, description, category, state, tags, significance, frequency } = req.body;
 
     const { data: ritual, error } = await supabase
       .from('rituals')
@@ -71,7 +72,7 @@ router.post('/', authMiddleware, async (req, res) => {
         title,
         description,
         category,
-        region,
+        state,
         tags,
         significance,
         frequency,
@@ -105,7 +106,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
       return res.status(403).json({ message: 'Not authorized' });
     }
 
-    const { title, description, category, region, tags, significance, frequency } = req.body;
+    const { title, description, category, state, tags, significance, frequency } = req.body;
 
     const { data: updated, error } = await supabase
       .from('rituals')
@@ -113,7 +114,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
         title,
         description,
         category,
-        region,
+        state,
         tags,
         significance,
         frequency,

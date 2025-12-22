@@ -72,7 +72,7 @@ router.get('/following', authMiddleware, async (req, res) => {
       id: c.users.id,
       email: c.users.email,
       fullName: c.users.full_name,
-      region: c.users.region
+      state_name: c.users.state_name
     }));
 
     res.json(following);
@@ -95,7 +95,7 @@ router.get('/followers', authMiddleware, async (req, res) => {
       id: c.users.id,
       email: c.users.email,
       fullName: c.users.full_name,
-      region: c.users.region
+      state_name: c.users.state_name
     }));
 
     res.json(followers);
@@ -129,14 +129,14 @@ router.get('/similar', authMiddleware, async (req, res) => {
 
     const { data: users } = await supabase
       .from('users')
-      .select('id, email, full_name, region')
+      .select('id, email, full_name, state_name')
       .in('id', userIds);
 
     const result = users.map(u => ({
       id: u.id,
       email: u.email,
       fullName: u.full_name,
-      region: u.region
+      state_name: u.state_name
     }));
 
     res.json(result);
