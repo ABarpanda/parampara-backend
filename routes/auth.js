@@ -9,7 +9,7 @@ const router = express.Router();
 // Register
 router.post('/register', async (req, res) => {
   try {
-    const { email, password, full_name, region } = req.body;
+    const { email, password, full_name, state_name, profile_pic=null } = req.body;
 
     const { data: existingUser } = await supabase
       .from('users')
@@ -29,7 +29,8 @@ router.post('/register', async (req, res) => {
         email,
         password_hash: hashedPassword,
         full_name: full_name,
-        region,
+        state_name: state_name,
+        profile_pic: profile_pic,
         created_at: new Date()
       })
       .select()
@@ -43,7 +44,8 @@ router.post('/register', async (req, res) => {
         id: user.id,
         email: user.email,
         full_name: user.full_name,
-        region: user.region
+        state_name: user.state_name,
+        profile_pic: profile_pic
       },
       token
     });
