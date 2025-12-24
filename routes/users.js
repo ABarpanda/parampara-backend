@@ -9,7 +9,7 @@ router.get('/:id', async (req, res) => {
   try {
     const { data: user, error } = await supabase
       .from('users')
-      .select('id, email, full_name, state_name, region, created_at')
+      .select('id, email, full_name, state_name, profile_picture, region, created_at')
       .eq('id', req.params.id)
       .single();
 
@@ -21,6 +21,7 @@ router.get('/:id', async (req, res) => {
       email: user.email,
       full_name: user.full_name,
       state_name: user.state_name,
+      profile_picture: user.profile_picture,
       region: user.region,
       createdAt: user.created_at
     });
@@ -45,6 +46,7 @@ router.get('/me/profile', authMiddleware, async (req, res) => {
       email: user.email,
       full_name: user.full_name,
       state_name: user.state_name,
+      profile_picture: user.profile_picture,
       region: user.region,
       createdAt: user.created_at
     });
@@ -62,12 +64,14 @@ router.put('/:id', authMiddleware, async (req, res) => {
       return res.status(403).json({ message: 'Not authorized' });
     }
 
-    const { full_name, region } = req.body;
+    const { full_name, state_name, profile_picture, region } = req.body;
 
     const { data: user, error } = await supabase
       .from('users')
       .update({
         full_name: full_name,
+        state_name,
+        profile_picture,
         region
       })
       .eq('id', req.user.id)
@@ -80,6 +84,8 @@ router.put('/:id', authMiddleware, async (req, res) => {
       id: user.id,
       email: user.email,
       full_name: user.full_name,
+      state_name: user.state_name,
+      profile_picture: user.profile_picture,
       region: user.region
     });
   } catch (err) {
@@ -90,12 +96,14 @@ router.put('/:id', authMiddleware, async (req, res) => {
 // Update my profile (protected)
 router.put('/me/profile', authMiddleware, async (req, res) => {
   try {
-    const { full_name, region } = req.body;
+    const { full_name, state_name, profile_picture, region } = req.body;
 
     const { data: user, error } = await supabase
       .from('users')
       .update({
         full_name: full_name,
+        state_name,
+        profile_picture,
         region
       })
       .eq('id', req.user.id)
@@ -108,6 +116,8 @@ router.put('/me/profile', authMiddleware, async (req, res) => {
       id: user.id,
       email: user.email,
       full_name: user.full_name,
+      state_name: user.state_name,
+      profile_picture: user.profile_picture,
       region: user.region
     });
   } catch (err) {
