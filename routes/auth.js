@@ -80,7 +80,8 @@ router.post('/login', async (req, res) => {
         id: user.id,
         email: user.email,
         full_name: user.full_name,
-        region: user.region
+        state_name: user.state_name,
+        profile_pic: user.profile_pic
       },
       token
     });
@@ -99,12 +100,14 @@ router.get('/verify', (req, res) => {
 
   try {
     const decoded = jwt.verify(token, config.JWT_SECRET);
+    // This comes from utils/auth.js -> generateToken(user){jwt.sign(...)}
     res.json({
       user: {
         id: decoded.id,
         email: decoded.email,
         full_name: decoded.full_name,
-        region: decoded.region
+        state_name: decoded.state_name,
+        profile_pic: decoded.profile_pic
       }
     });
   } catch (err) {

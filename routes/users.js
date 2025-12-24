@@ -9,7 +9,7 @@ router.get('/:id', async (req, res) => {
   try {
     const { data: user, error } = await supabase
       .from('users')
-      .select('id, email, full_name, region, created_at')
+      .select('id, email, full_name, state_name, region, created_at')
       .eq('id', req.params.id)
       .single();
 
@@ -20,6 +20,7 @@ router.get('/:id', async (req, res) => {
       id: user.id,
       email: user.email,
       full_name: user.full_name,
+      state_name: user.state_name,
       region: user.region,
       createdAt: user.created_at
     });
@@ -43,6 +44,7 @@ router.get('/me/profile', authMiddleware, async (req, res) => {
       id: user.id,
       email: user.email,
       full_name: user.full_name,
+      state_name: user.state_name,
       region: user.region,
       createdAt: user.created_at
     });
@@ -50,6 +52,8 @@ router.get('/me/profile', authMiddleware, async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+//! Update methods are wrong
 
 // Update profile (protected)
 router.put('/:id', authMiddleware, async (req, res) => {
