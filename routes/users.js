@@ -115,4 +115,19 @@ router.put('/me/profile', authMiddleware, async (req, res) => {
   }
 });
 
+router.delete('/me/delete', authMiddleware, async (req, res) => {
+  try {
+    const { error } = await supabase
+      .from('users')
+      .delete()
+      .eq('id', req.user.id);
+
+    if (error) throw error;
+
+    res.json({ message: 'User deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 export default router;
