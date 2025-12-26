@@ -9,7 +9,7 @@ router.get('/:id', async (req, res) => {
   try {
     const { data: user, error } = await supabase
       .from('users')
-      .select('id, email, full_name, state_name, region, created_at')
+      .select('id, email, full_name, state_name, profile_pic, region, created_at')
       .eq('id', req.params.id)
       .single();
 
@@ -21,6 +21,7 @@ router.get('/:id', async (req, res) => {
       email: user.email,
       full_name: user.full_name,
       state_name: user.state_name,
+      profile_pic: user.profile_pic,
       region: user.region,
       createdAt: user.created_at
     });
@@ -45,44 +46,9 @@ router.get('/me/profile', authMiddleware, async (req, res) => {
       email: user.email,
       full_name: user.full_name,
       state_name: user.state_name,
+      profile_pic: user.profile_pic,
       region: user.region,
       createdAt: user.created_at
-    });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// Update profile (protected)
-router.put('/:id', authMiddleware, async (req, res) => {
-  try {
-    if (req.params.id !== req.user.id) {
-      return res.status(403).json({ message: 'Not authorized' });
-    }
-
-    const { full_name, state_name, profile_picture, region } = req.body;
-
-    const { data: user, error } = await supabase
-      .from('users')
-      .update({
-        full_name: full_name,
-        state_name,
-        profile_picture,
-        region
-      })
-      .eq('id', req.user.id)
-      .select()
-      .single();
-
-    if (error) throw error;
-
-    res.json({
-      id: user.id,
-      email: user.email,
-      full_name: user.full_name,
-      state_name: user.state_name,
-      profile_picture: user.profile_picture,
-      region: user.region
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -92,16 +58,18 @@ router.put('/:id', authMiddleware, async (req, res) => {
 // Update my profile (protected)
 router.put('/me/profile', authMiddleware, async (req, res) => {
   try {
-    const { full_name, state_name, profile_picture, region } = req.body;
+    const { full_name, state_name, profile_pic, region } = req.body;
+    const updateFields = {};
+    if (full_name) updateFields.full_name = full_name;
+    if (state_name) updateFields.state_name = state_name;
+    if (region) updateFields.region = region;
+    if (profile_pic !== undefined) updateFields.profile_pic = profile_pic;
+
+    updateFields.updated_at = new Date();
 
     const { data: user, error } = await supabase
       .from('users')
-      .update({
-        full_name: full_name,
-        state_name,
-        profile_picture,
-        region
-      })
+      .update(updateFields)
       .eq('id', req.user.id)
       .select()
       .single();
@@ -113,9 +81,24 @@ router.put('/me/profile', authMiddleware, async (req, res) => {
       email: user.email,
       full_name: user.full_name,
       state_name: user.state_name,
-      profile_picture: user.profile_picture,
+      profile_pic: user.profile_pic,
       region: user.region
     });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.delete('/me/delete', authMiddleware, async (req, res) => {
+  try {
+    const { error } = await supabase
+      .from('users')
+      .delete()
+      .eq('id', req.user.id);
+
+    if (error) throw error;
+
+    res.json({ message: 'User deleted successfully' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
