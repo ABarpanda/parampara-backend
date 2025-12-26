@@ -9,7 +9,7 @@ const router = express.Router();
 // Register
 router.post('/register', async (req, res) => {
   try {
-    const { email, password, full_name, state_name } = req.body;
+    const { email, password, full_name, state_name, profile_pic=null } = req.body;
 
     const { data: existingUser } = await supabase
       .from('users')
@@ -30,8 +30,7 @@ router.post('/register', async (req, res) => {
         password_hash: hashedPassword,
         full_name: full_name,
         state_name: state_name,
-        profile_picture: null,
-        region: null,
+        profile_pic: profile_pic,
         created_at: new Date()
       })
       .select()
@@ -46,9 +45,7 @@ router.post('/register', async (req, res) => {
         email: user.email,
         full_name: user.full_name,
         state_name: user.state_name,
-        profile_picture: user.profile_picture,
-        region: user.region,
-        created_at: user.created_at
+        profile_pic: profile_pic
       },
       token
     });
@@ -84,9 +81,7 @@ router.post('/login', async (req, res) => {
         email: user.email,
         full_name: user.full_name,
         state_name: user.state_name,
-        profile_picture: user.profile_picture,
-        region: user.region,
-        created_at: user.created_at
+        profile_pic: user.profile_pic
       },
       token
     });
@@ -105,12 +100,14 @@ router.get('/verify', (req, res) => {
 
   try {
     const decoded = jwt.verify(token, config.JWT_SECRET);
+    // This comes from utils/auth.js -> generateToken(user){jwt.sign(...)}
     res.json({
       user: {
         id: decoded.id,
         email: decoded.email,
         full_name: decoded.full_name,
-        state_name: decoded.state_name
+        state_name: decoded.state_name,
+        profile_pic: decoded.profile_pic
       }
     });
   } catch (err) {

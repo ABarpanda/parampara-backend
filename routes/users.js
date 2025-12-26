@@ -9,7 +9,7 @@ router.get('/:id', async (req, res) => {
   try {
     const { data: user, error } = await supabase
       .from('users')
-      .select('id, email, full_name, state_name, profile_picture, region, created_at')
+      .select('id, email, full_name, state_name, region, created_at')
       .eq('id', req.params.id)
       .single();
 
@@ -21,7 +21,6 @@ router.get('/:id', async (req, res) => {
       email: user.email,
       full_name: user.full_name,
       state_name: user.state_name,
-      profile_picture: user.profile_picture,
       region: user.region,
       createdAt: user.created_at
     });
@@ -46,7 +45,6 @@ router.get('/me/profile', authMiddleware, async (req, res) => {
       email: user.email,
       full_name: user.full_name,
       state_name: user.state_name,
-      profile_picture: user.profile_picture,
       region: user.region,
       createdAt: user.created_at
     });
